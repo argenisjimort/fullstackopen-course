@@ -5,7 +5,7 @@ Create a diagram depicting the situation where the user goes to the single-page 
 
     participant b as Browser
     participant s as Server
-
+    
     b ->> s: get "/spa.html" file
     activate s
     s --> b: send html
