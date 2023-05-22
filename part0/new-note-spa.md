@@ -6,7 +6,7 @@
     participant b as Browser
     participant j as Javascript
     participant s as Server
-
+    
     b ->> j: submit form
     Note over j: Submit form request is managed by javascript (sendToServer)
 
