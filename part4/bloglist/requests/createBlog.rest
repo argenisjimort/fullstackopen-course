@@ -1,0 +1,9 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+    "title": "Otro libro",
+    "author": "Capitan de Navio",
+    "url": "https://google.com",
+    "likes": 800
+}
