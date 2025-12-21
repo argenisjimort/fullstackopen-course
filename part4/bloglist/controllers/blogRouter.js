@@ -3,20 +3,34 @@ const blogsRouter = require('express').Router();
 
 /** @type {import('mongoose').Model} */ //this is is a 'hint' to that VSCODE knows the carateristic of the import, so you get hints
 const Blog = require(`../models/Blog`);
+const User = require(`../models/User`);
 
 
-
-blogsRouter.get('/', (request, response, next) => {
-    Blog.find({}).then((blogs) => {
-        response.json(blogs)
-    })
+blogsRouter.get('/', async (request, response, next) => {
+    const blogs = await Blog.find({}).populate('user')
+    response.json(blogs);
+    // Blog.find({}).then((blogs) => {
+    //     response.json(blogs)
+    // })
 })
 
-blogsRouter.post('/', (request, response, next) => {
-    const blog = new Blog(request.body)
-    blog.save()
-        .then((result) => { response.status(201).json(result) })
-        .catch(err => next(err))
+blogsRouter.post('/', async (request, response, next) => {
+
+    const userTocreate = request.body;
+    let userOwnerOfblog = await User.findById(userTocreate.user);
+    //try to find a user with the id provided on request.body.user
+
+    if(!userOwnerOfblog) { //if no userfound, just get the first user found on the DB
+        userOwnerOfblog =  await User.findOne({});
+        userTocreate.user = userOwnerOfblog._id;
+    }
+
+    const blogCreated = await Blog.create(userTocreate) //if error here it will go to the errorhandler
+    userOwnerOfblog.blogs = userOwnerOfblog.blogs.concat(blogCreated._id);
+    await userOwnerOfblog.save();
+    
+    response.status(201).json(blogCreated);//this would never execute. no need for try catch
+    //bc im using express 5
 })
 
 blogsRouter.delete(`/:id`, (request, response, next) => {

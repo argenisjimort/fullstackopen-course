@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node --watch index.js",
-    "test": "cross-env NODE_ENV=test node --test --test-reporter=spec",
+    "test": "cross-env NODE_ENV=test node --test --test-concurrency=1 --test-reporter=spec",
     "test:list-helper": "npm run test ./tests/list-helper-tests/**/*test.js",
     "test:api": "npm run test ./tests/api-tests/**/*test.js"
   },

@@ -11,7 +11,7 @@ const app = express()
 app.use(express.json())
 
 //connection with the mongoDB, and the blogsList collection
-app.use(middleware.requestLogger);
+//app.use(middleware.requestLogger);
 
 mongoose
     .connect(config.MONGODB_URI, {family: 4})

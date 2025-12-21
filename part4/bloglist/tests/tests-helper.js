@@ -1,4 +1,23 @@
-const Blog = require(`../models/Blog`);
+const blogsApiUrl = `/api/blogs`;
+const usersApiURl = `/api/users`;
+
+const usersToAddBeforeTests = [
+    {
+        username: `justAnUsername`,
+        name: `Capitan de Navio`,
+        password: `justAPassword`
+    },
+    {
+        username: `justAnUsername2`,
+        name: `Capitan de Navio`,
+        password: `justAPassword2`
+    },
+    {
+        username: `justAnUsername3`,
+        name: `Capitan de Navio`,
+        password: `justAPassword3`
+    }
+]
 
 const dummyBlogs = [
     {
@@ -54,4 +73,4 @@ const dummyBlogs = [
 
 
 
-module.exports = {dummyBlogs}
+module.exports = {dummyBlogs, usersToAddBeforeTests, blogsApiUrl, usersApiURl}

@@ -3,17 +3,20 @@ const bcrypt = require(`bcrypt`);
 
 /** @type {import('mongoose').Model} */ //this is is a 'hint' to that VSCODE knows the carateristic of the import, so you get hints
 const User = require(`../models/User`);
+const { populate } = require('dotenv');
 
 
 
 usersRouter.get(`/`, async (request, response, next) => {
-    const foundUsers = await User.find({});
+    const foundUsers = await User.find({}).populate(`blogs`);
     response.json(foundUsers); //respond with the user (after transforming to json)
     //this will also by default give status of 200
 })
 
 usersRouter.post(`/`, async (request, response, next) => {
     const {password, ...infoToInclude} = request.body;
+    if(password.length < 3) return response.status(400).send({error: `password needs be at least 3 characters long`})
+    
     //10 is the saltRounds (how many times the password will be hashed) the more the more secure, but slower
     //this should not be required, bc express will handle the async errors
     // const createdUser = await User
