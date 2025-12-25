@@ -8,7 +8,7 @@ const { populate } = require('dotenv');
 
 
 usersRouter.get(`/`, async (request, response, next) => {
-    const foundUsers = await User.find({}).populate(`blogs`);
+    const foundUsers = await User.find({}).populate();
     response.json(foundUsers); //respond with the user (after transforming to json)
     //this will also by default give status of 200
 })

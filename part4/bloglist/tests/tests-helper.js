@@ -1,5 +1,6 @@
 const blogsApiUrl = `/api/blogs`;
 const usersApiURl = `/api/users`;
+const loginApiUrl = `/api/login`;
 
 const usersToAddBeforeTests = [
     {
@@ -73,4 +74,4 @@ const dummyBlogs = [
 
 
 
-module.exports = {dummyBlogs, usersToAddBeforeTests, blogsApiUrl, usersApiURl}
+module.exports = {dummyBlogs, usersToAddBeforeTests, blogsApiUrl, usersApiURl, loginApiUrl}
