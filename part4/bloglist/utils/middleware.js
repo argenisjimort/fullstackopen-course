@@ -29,7 +29,7 @@ const loginTokenExtractor = (request, response, next) => {
 
 const userExtractor = async (request, response, next) => {
     const undecodedToken = request.loginToken;
-    if (!undecodedToken) return response.status(401).send({ error: `missing TOKEN for Blog deletion` })
+    if (!undecodedToken) return response.status(401).send({ error: `missing TOKEN` })
 
     
     const decodedToken = jsonWebToken.verify(undecodedToken, process.env.SECRET);
