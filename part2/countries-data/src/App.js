@@ -20,7 +20,7 @@ function App() {
     }
 
     if ( matchingCountries.length === 1 ) {
-      const country = matchingCountries[0];
+      const country = matchingCountries[0]; //only to reference it in a shorter way below
       axios.get( `${WEATHER_API}lat=${country.capitalInfo.latlng[0]}&lon=${country.capitalInfo.latlng[1]}&units=metric&appid=${WEATHER_API_KEY}` )
         .then( response => setWeather(response.data) );
     }
@@ -53,7 +53,7 @@ function App() {
     )
   }
 
-  const Country = ({country}) => {    
+  const Country = ({country}) => {
     return (
       <div>
         <h2> {country.name.common} </h2>
