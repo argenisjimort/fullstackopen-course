@@ -1,0 +1,15 @@
+{
+    "name": "blogslist-front-back",
+    "scripts": {
+        "dev:old": "concurrently  \" npm run server \"  \"npm run client\" ",
+        "dev": "concurrently npm:server npm:client",
+        "server": "npm run start:test --prefix server ",
+        "client": "npm run dev --prefix frontend"
+    },
+    "dependencies": {
+        "concurrently": "^9.2.1"
+    },
+    "devDependencies": {
+        "prettier": "^3.9.4"
+    }
+}

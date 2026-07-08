@@ -1,0 +1,89 @@
+
+const blogsRouter = require('express').Router();
+const jsonWebToken = require(`jsonwebtoken`);
+const {userExtractor} = require(`../utils/middleware`);
+
+/** @type {import('mongoose').Model} */ //this is is a 'hint' to that VSCODE knows the carateristic of the import, so you get hints
+const Blog = require(`../models/Blog`);
+/** @type {import('mongoose').Model} */
+const User = require(`../models/User`);
+const { response } = require('../app');
+
+
+
+blogsRouter.get('/', async (request, response, next) => {
+    const blogs = await Blog.find({}).populate('user')
+    response.json(blogs);
+    // Blog.find({}).then((blogs) => {
+    //     response.json(blogs)
+    // })
+})
+
+
+blogsRouter.get('/:id', async (request, response, next) => {
+    const blog = await Blog.findById(request.params.id)
+    response.json(blog)
+})
+
+blogsRouter.post('/', userExtractor, async (request, response, next) => {
+
+    const userOwnerOfblog = request.user;
+    const blogToCreate = request.body;
+    blogToCreate.user = userOwnerOfblog._id;
+
+    const blogCreated = await Blog.create(blogToCreate) //if error here it will go to the errorhandler
+
+
+    // userOwnerOfblog.blogs = userOwnerOfblog.blogs.concat(blogCreated._id);
+    // await userOwnerOfblog.save();
+
+    await User.findByIdAndUpdate(userOwnerOfblog._id,  { $push: { blogs: blogCreated._id } })
+    //need to use { $push: { blogs: blogCreated._id } } bc using promise.all() on the tests
+    //being promises execute at the same time it messes with the concatenation of ids and saving them
+
+    response.status(201).json(blogCreated);//this would never execute. no need for try catch
+    //bc im using express 5
+})
+
+blogsRouter.delete(`/:id`, userExtractor, async (request, response, next) => {
+
+    const foundUser = request.user;
+
+    const blogToDelete = await Blog.findById(request.params.id);
+    if(!blogToDelete) return response.status(401).send({ error: `blog NOT FOUND` })
+
+    //console.log(blogToDelete)
+    if(blogToDelete.user.toString() !== foundUser._id.toString()) return response.status(401).send({error: `User not owner of BLOG`})
+
+    await blogToDelete.deleteOne();
+
+    response.status(204).send()
+
+
+    // Blog.findByIdAndDelete(request.params.id)
+    //     .then(() => response.status(204).send())
+    //     .catch(err => next(err))
+})
+
+
+blogsRouter.put(`/:id`, (request, response, next) => {
+    Blog
+        .findByIdAndUpdate(request.params.id, request.body, { new: true, runValidators: true })
+        //if there is a response, return it, if not, return 404
+        //by design, if the id to edit doesnt exists express doesnt throw an error
+        .then(res => res ? response.json(res) : response.status(404).send({ error: `bad request, item not found` }))
+        .catch(err => next(err)) //this is for any other error besides the posible 404
+})
+
+
+blogsRouter.post(`/:id/comments`, async (request, response, next) => {
+    const foundBlog = await Blog.findById(request.params.id)
+    //const editedBlog = {...foundBlog, comments: foundBlog.comments.concat(request.body)}
+    //editedBlog.save()
+
+    foundBlog.comments = foundBlog.comments.concat(request.body.comment)
+    const res = await foundBlog.save()
+    response.json(res)
+})
+
+module.exports = blogsRouter;
